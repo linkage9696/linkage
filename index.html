@@ -10,73 +10,153 @@
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Linkage">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 
 <style>
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:sans-serif;
   background:#eef3fb;
   text-align:center;
-  padding-bottom:40px;
+  padding-bottom:80px;
 }
 .header{
-  padding:35px 20px 15px;
+  padding:30px 20px 10px;
 }
 .logo{
-  width:120px;
-  height:120px;
+  width:100px;
+  height:100px;
   margin:auto;
   object-fit:contain;
-  border-radius:24px;
 }
 .title{
-  font-size:34px;
+  font-size:32px;
   font-weight:bold;
-  margin-top:12px;
 }
 .sub{
   color:#666;
-  margin-top:4px;
   margin-bottom:20px;
 }
 .nameBox{
   max-width:480px;
-  margin:0 auto 18px;
-  padding:12px;
-  background:white;
-  border-radius:14px;
-  box-shadow:0 2px 8px rgba(0,0,0,.1);
+  margin:0 auto 15px;
+  padding:10px;
+  background:#fff;
+  border-radius:12px;
 }
 .btn{
   width:90%;
   max-width:480px;
-  margin:12px auto;
-  padding:18px;
-  font-size:18px;
+  margin:10px auto;
+  padding:15px;
+  font-size:16px;
   border:none;
-  border-radius:16px;
-  color:white;
-  font-weight:bold;
+  border-radius:14px;
+  color:#fff;
   cursor:pointer;
   display:block;
-  box-shadow:0 3px 8px rgba(0,0,0,.16);
 }
-.job{
-  background:linear-gradient(180deg,#22c55e,#15803d);
+.alcohol{ background:linear-gradient(180deg,#3b82f6,#1d4ed8); }
+.form{ background:linear-gradient(180deg,#10b981,#047857); }
+.copy{ background:linear-gradient(180deg,#f59e0b,#b45309); }
+.property{ background:linear-gradient(180deg,#8b5cf6,#5b21b6); }
+.chat{ background:linear-gradient(180deg,#ec4899,#be185d); }
+.viewer{ background:linear-gradient(180deg,#14b8a6,#0f766e); }
+.car{ background:linear-gradient(180deg,#0ea5e9,#0369a1); }
+.use{ background:linear-gradient(135deg,#36d1dc,#5b86e5); }
+.schedule{ background:linear-gradient(180deg,#7c3aed,#5b21b6); }
+.admin{ background:linear-gradient(180deg,#64748b,#334155); }
+.job{ background:linear-gradient(180deg,#22c55e,#15803d); }
+  
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:60px;
+  background:#fff;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  box-shadow:0 -2px 10px rgba(0,0,0,0.1);
+  z-index:100;
 }
-.resume{
-  background:linear-gradient(180deg,#3b82f6,#1d4ed8);
+.navBtn{
+  flex:1;
+  border:none;
+  background:none;
+  font-size:12px;
+  color:#333;
 }
-.admin{
-  background:linear-gradient(180deg,#64748b,#334155);
+.navBtn span{
+  display:block;
+  font-size:20px;
 }
-.note{
-  max-width:480px;
-  margin:20px auto;
-  padding:12px;
-  color:#666;
+
+.updateOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  padding:20px;
+}
+.updateCard{
+  width:100%;
+  max-width:520px;
+  background:#fff;
+  border-radius:22px;
+  padding:22px 18px;
+  box-shadow:0 18px 40px rgba(0,0,0,0.25);
+  text-align:left;
+}
+.updateTitle{
+  font-size:24px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+.updateVersion{
   font-size:14px;
-  line-height:1.6;
+  color:#666;
+  margin-bottom:12px;
+}
+.updateMessage{
+  font-size:16px;
+  line-height:1.8;
+  color:#333;
+  white-space:pre-line;
+  margin-bottom:18px;
+}
+.updateButtons{
+  display:flex;
+  gap:10px;
+}
+.updateBtn{
+  flex:1;
+  min-height:50px;
+  border:none;
+  border-radius:12px;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.updatePrimary{
+  background:linear-gradient(180deg,#2f6df6,#2457c9);
+  color:#fff;
+}
+.updateSecondary{
+  background:#e5e7eb;
+  color:#111;
+}
+
+@media (max-width: 600px){
+  .updateButtons{
+    flex-direction:column;
+  }
 }
 </style>
 </head>
@@ -91,77 +171,189 @@ body{
 
 <div class="nameBox" id="userBox">ログイン中</div>
 
-<button class="btn job" onclick="goJob()">👥 求職者共有</button>
-<button class="btn resume" onclick="goResume()">📝 履歴書作成</button>
+<button class="btn alcohol" onclick="goAlcohol()">🚗 アルコールチェック</button>
+<button class="btn form" onclick="goForm()">📄 応募フォームを開く</button>
+<button class="btn copy" onclick="copyForm()">🔗 URLコピー</button>
 
-<div class="note">
-  求職者共有と履歴書作成の入口です。<br>
-  URLの最後に <b>?name=猪俣</b> のように付けると、各画面へ名前を引き継ぎます。
+<button class="btn car" onclick="goCar()">🚘 車両管理</button>
+<button class="btn use" onclick="goUse()">🚚 車両使用管理</button>
+<button class="btn schedule" onclick="goSchedule()">🗓️ スケジュール</button>
+<button class="btn job" onclick="goJob()">👥 求職者共有</button>  
+<button class="btn property" onclick="goProperty()">🏠 物件写真管理</button>
+<button class="btn chat" onclick="goChat()">💬 社内チャット</button>
+<button class="btn viewer" onclick="goPropertyViewer()">🔍 物件検索</button>
+
+<div id="adminArea" style="display:block;">
+  <button class="btn admin" onclick="goAdmin()">⚙️ 管理画面</button>
+</div>
+
+<div class="bottomNav">
+  <button class="navBtn" onclick="goHome()">
+    <span>🏠</span>
+    ホーム
+  </button>
+  <button class="navBtn" onclick="goCar()">
+    <span>🚘</span>
+    車両
+  </button>
+  <button class="navBtn" onclick="goUse()">
+    <span>🚚</span>
+    使用
+  </button>
+  <button class="navBtn" onclick="goChat()">
+    <span>💬</span>
+    チャット
+  </button>
+</div>
+
+<div class="updateOverlay" id="updateOverlay">
+  <div class="updateCard">
+    <div class="updateTitle" id="updateTitle">更新があります</div>
+    <div class="updateVersion" id="updateVersion"></div>
+    <div class="updateMessage" id="updateMessage"></div>
+    <div class="updateButtons">
+      <button class="updateBtn updatePrimary" id="updateGoBtn">更新する</button>
+      <button class="updateBtn updateSecondary" id="updateLaterBtn">あとで</button>
+    </div>
+  </div>
 </div>
 
 <script>
-/* ===== URL設定 ===== */
-/* 求職者共有GASのURLをここに入れてください */
-const JOB_URL = "https://script.google.com/macros/s/AKfycbwu3me6U1IZ5JJkNHqf4V14Ecj4fQtfz6NDOe05p0XwqmDyNIKB-UKCPSi1tULrY3Dl/exec";
+const ALCOHOL_URL = "https://script.google.com/macros/s/AKfycbzwZ9DT8cCl3wpMEZ6oMmnUC0Ofa_LumzACVCUtYz-dEjrsRN_yWl5wLsA-2Tj9YgvvwQ/exec";
+const FORM_URL = "https://script.google.com/macros/s/AKfycbwIw3h--vBxXMP8AYzOyG51oITqv6WKYm2T41nxFY1qsbkZo8dOnwfgKrF-FPARfCI7/exec";
+const PROPERTY_URL = "https://script.google.com/macros/s/AKfycbxvP86tyS2YsIwAO6YgZsUIXF9H7wx40q7D6BqNSf8R6UZYl6fkWTHa1WkFj-OskSUp5Q/exec";
+const CHAT_URL = "https://script.google.com/macros/s/AKfycbzY--b0L9LzJ7PCjO1POgAh2coeUanrpzk_1WaHNzFQCr80S8BZU07Wu_Y2-VeV4Ee8RA/exec";
+const CAR_URL = "https://script.google.com/macros/s/AKfycbxLzeCa7O5_Yg5ZaVQZF8K-2OlGXeT5gmGwEe4ZlTLrEGYOYJUWzYvylgJ1U0PHXikO-g/exec";
+const VIEWER_URL = "https://script.google.com/macros/s/AKfycbxvP86tyS2YsIwAO6YgZsUIXF9H7wx40q7D6BqNSf8R6UZYl6fkWTHa1WkFj-OskSUp5Q/exec?mode=viewer";
+const USE_URL = "https://script.google.com/macros/s/AKfycbxQev0GXTduIpwVv3fS4dIHnYBKtBZEdh0iRsq9lE2Li_AktExOdkGPuzQBKHR3M9AdOA/exec";
+const SCHEDULE_URL = "https://script.google.com/macros/s/AKfycbxc3sXqt6yTM_OZugasDjbhDuv4qm_maJRJo7XkbM9uDFQf8YzVoUr2DhrbWxFJz-pg/exec";
+const JOB_URL = "https://script.google.com/macros/s/AKfycbwu3me6U1IZ5JJkNHqf4V14Ecj4fQtfz6NDOe05p0XwqmDyNIKB-UKCPSi1tULrY3Dl/exec";  
+  
+const ADMIN_URL = "https://script.google.com/macros/s/AKfycbwuFHe1cBIjUB_tgEQrV4ngESM0M9gp4mDwbRWM5tgfuXxh_mLuREFgWFFbezEPMBNg/exec";
+const UPDATE_API_URL = "https://script.google.com/macros/s/AKfycby6ZroDYpfu5y52VrQ9nTNEEsrC6joYt49zdendeI2du1OtbwcUfz7nAlGMgQeFV5iX/exec";
+const CURRENT_MENU_VERSION = "v2.0.0";
 
-/* 履歴書作成GAS */
-const RESUME_URL = "https://script.google.com/macros/s/AKfycbwjseBzgfOs4GirigT3_XB1LCnN2oQCUxI_7oKyupRt5Sp6wkiPJdIkt3yqxsR0cwYf/exec";
-
-/* ===== 名前取得 ===== */
 const params = new URLSearchParams(window.location.search);
 const empName = (params.get("name") || "").trim();
 
-function escapeHtml(text){
-  return String(text || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+function escapeHtml(text) {
+  return String(text || '')
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-function renderUserName(){
+function renderUserName() {
   const box = document.getElementById("userBox");
-  if(empName){
+  if (!box) return;
+
+  if (empName) {
     box.innerHTML = "<b>" + escapeHtml(empName) + "</b> さんでログイン中";
-  }else{
+  } else {
     box.textContent = "名前がありません";
   }
 }
 
-function appendName(url){
-  let result = String(url || "").trim();
-
-  if(!result || result.includes("ここに")){
-    alert("URLがまだ設定されていません。");
-    return "";
-  }
-
-  if(empName){
+function appendName(url) {
+  let result = url;
+  if (empName) {
     result += (result.includes("?") ? "&" : "?") + "name=" + encodeURIComponent(empName);
   }
-
-  result += (result.includes("?") ? "&" : "?") + "t=" + Date.now();
-
   return result;
 }
 
-function move(url){
-  const target = appendName(url);
-  if(target){
-    location.href = target;
+function move(url) {
+  if (!url) {
+    alert("URLが設定されていません。");
+    return;
+  }
+  location.href = appendName(url);
+}
+
+function goAlcohol(){ move(ALCOHOL_URL); }
+function goForm(){ move(FORM_URL); }
+function goProperty(){ move(PROPERTY_URL); }
+function goChat(){ move(CHAT_URL); }
+function goCar(){ move(CAR_URL); }
+function goUse(){ move(USE_URL); }
+function goSchedule(){ move(SCHEDULE_URL); }
+function goPropertyViewer(){ move(VIEWER_URL); }
+
+function goHome(){
+  let url = location.origin + location.pathname;
+  if (empName) {
+    url += "?name=" + encodeURIComponent(empName);
+  }
+  url += (url.includes("?") ? "&" : "?") + "t=" + Date.now();
+  location.href = url;
+}
+
+function goAdmin(){
+  let url = appendName(ADMIN_URL);
+  url += (url.includes("?") ? "&" : "?") + "t=" + Date.now();
+  location.href = url;
+}
+
+function copyForm(){
+  navigator.clipboard.writeText(FORM_URL);
+  alert("コピーしました！");
+}
+
+function normalizeVersion(v) {
+  return String(v || "").trim().toLowerCase();
+}
+
+function goJob(){ move(JOB_URL); }
+  
+async function checkUpdateInfo() {
+  try {
+    const res = await fetch(UPDATE_API_URL + "?t=" + Date.now(), { cache: "no-store" });
+    const data = await res.json();
+
+    const updateOn = data.update_on === true || String(data.update_on).toLowerCase() === "true";
+    const forceUpdate = data.force_update === true || String(data.force_update).toLowerCase() === "true";
+    const newVersion = normalizeVersion(data.version);
+    const currentVersion = normalizeVersion(CURRENT_MENU_VERSION);
+
+    if (!updateOn) return;
+    if (newVersion && newVersion === currentVersion) return;
+
+    document.getElementById("updateTitle").textContent = data.title || "更新があります";
+    document.getElementById("updateVersion").textContent = data.version ? ("バージョン: " + data.version) : "";
+    document.getElementById("updateMessage").textContent = data.message || "最新版へ更新してください。";
+
+    document.getElementById("updateGoBtn").onclick = function() {
+      let newUrl = data.new_url || location.href;
+      if (empName) {
+        newUrl += (newUrl.includes("?") ? "&" : "?") + "name=" + encodeURIComponent(empName);
+      }
+      newUrl += (newUrl.includes("?") ? "&" : "?") + "t=" + Date.now();
+      location.href = newUrl;
+    };
+
+    const laterBtn = document.getElementById("updateLaterBtn");
+    if (forceUpdate) {
+      laterBtn.style.display = "none";
+      document.body.style.overflow = "hidden";
+    } else {
+      laterBtn.style.display = "block";
+      laterBtn.onclick = function() {
+        document.getElementById("updateOverlay").style.display = "none";
+      };
+    }
+
+    document.getElementById("updateOverlay").style.display = "flex";
+  } catch (e) {
+    console.log("更新情報の取得失敗", e);
   }
 }
 
-function goJob(){
-  move(JOB_URL);
-}
-
-function goResume(){
-  move(RESUME_URL);
-}
-
-renderUserName();
+window.addEventListener("load", function() {
+  renderUserName();
+  checkUpdateInfo();
+});
 </script>
 
 </body>
