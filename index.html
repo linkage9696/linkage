@@ -17,35 +17,43 @@
 <style>
 body{
   margin:0;
-  font-family:sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   background:#eef3fb;
   text-align:center;
   padding-bottom:80px;
 }
+
 .header{
   padding:30px 20px 10px;
 }
+
 .logo{
   width:100px;
   height:100px;
   margin:auto;
   object-fit:contain;
 }
+
 .title{
   font-size:32px;
   font-weight:bold;
+  margin-top:8px;
 }
+
 .sub{
   color:#666;
   margin-bottom:20px;
 }
+
 .nameBox{
   max-width:480px;
   margin:0 auto 15px;
   padding:10px;
   background:#fff;
   border-radius:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
+
 .btn{
   width:90%;
   max-width:480px;
@@ -57,7 +65,10 @@ body{
   color:#fff;
   cursor:pointer;
   display:block;
+  font-weight:bold;
+  box-shadow:0 3px 8px rgba(0,0,0,.16);
 }
+
 .alcohol{ background:linear-gradient(180deg,#3b82f6,#1d4ed8); }
 .form{ background:linear-gradient(180deg,#10b981,#047857); }
 .copy{ background:linear-gradient(180deg,#f59e0b,#b45309); }
@@ -69,7 +80,8 @@ body{
 .schedule{ background:linear-gradient(180deg,#7c3aed,#5b21b6); }
 .admin{ background:linear-gradient(180deg,#64748b,#334155); }
 .job{ background:linear-gradient(180deg,#22c55e,#15803d); }
-  
+.resume{ background:linear-gradient(180deg,#3b82f6,#1d4ed8); }
+
 .bottomNav{
   position:fixed;
   bottom:0;
@@ -83,6 +95,7 @@ body{
   box-shadow:0 -2px 10px rgba(0,0,0,0.1);
   z-index:100;
 }
+
 .navBtn{
   flex:1;
   border:none;
@@ -90,6 +103,7 @@ body{
   font-size:12px;
   color:#333;
 }
+
 .navBtn span{
   display:block;
   font-size:20px;
@@ -105,6 +119,7 @@ body{
   z-index:9999;
   padding:20px;
 }
+
 .updateCard{
   width:100%;
   max-width:520px;
@@ -114,16 +129,19 @@ body{
   box-shadow:0 18px 40px rgba(0,0,0,0.25);
   text-align:left;
 }
+
 .updateTitle{
   font-size:24px;
   font-weight:bold;
   margin-bottom:10px;
 }
+
 .updateVersion{
   font-size:14px;
   color:#666;
   margin-bottom:12px;
 }
+
 .updateMessage{
   font-size:16px;
   line-height:1.8;
@@ -131,10 +149,12 @@ body{
   white-space:pre-line;
   margin-bottom:18px;
 }
+
 .updateButtons{
   display:flex;
   gap:10px;
 }
+
 .updateBtn{
   flex:1;
   min-height:50px;
@@ -144,16 +164,18 @@ body{
   font-weight:bold;
   cursor:pointer;
 }
+
 .updatePrimary{
   background:linear-gradient(180deg,#2f6df6,#2457c9);
   color:#fff;
 }
+
 .updateSecondary{
   background:#e5e7eb;
   color:#111;
 }
 
-@media (max-width: 600px){
+@media (max-width:600px){
   .updateButtons{
     flex-direction:column;
   }
@@ -178,7 +200,8 @@ body{
 <button class="btn car" onclick="goCar()">🚘 車両管理</button>
 <button class="btn use" onclick="goUse()">🚚 車両使用管理</button>
 <button class="btn schedule" onclick="goSchedule()">🗓️ スケジュール</button>
-<button class="btn job" onclick="goJob()">👥 求職者共有</button>  
+<button class="btn job" onclick="goJob()">👥 求職者共有</button>
+<button class="btn resume" onclick="goResume()">📝 履歴書作成</button>
 <button class="btn property" onclick="goProperty()">🏠 物件写真管理</button>
 <button class="btn chat" onclick="goChat()">💬 社内チャット</button>
 <button class="btn viewer" onclick="goPropertyViewer()">🔍 物件検索</button>
@@ -219,6 +242,7 @@ body{
 </div>
 
 <script>
+/* ===== URL設定 ===== */
 const ALCOHOL_URL = "https://script.google.com/macros/s/AKfycbzwZ9DT8cCl3wpMEZ6oMmnUC0Ofa_LumzACVCUtYz-dEjrsRN_yWl5wLsA-2Tj9YgvvwQ/exec";
 const FORM_URL = "https://script.google.com/macros/s/AKfycbwIw3h--vBxXMP8AYzOyG51oITqv6WKYm2T41nxFY1qsbkZo8dOnwfgKrF-FPARfCI7/exec";
 const PROPERTY_URL = "https://script.google.com/macros/s/AKfycbxvP86tyS2YsIwAO6YgZsUIXF9H7wx40q7D6BqNSf8R6UZYl6fkWTHa1WkFj-OskSUp5Q/exec";
@@ -227,51 +251,63 @@ const CAR_URL = "https://script.google.com/macros/s/AKfycbxLzeCa7O5_Yg5ZaVQZF8K-
 const VIEWER_URL = "https://script.google.com/macros/s/AKfycbxvP86tyS2YsIwAO6YgZsUIXF9H7wx40q7D6BqNSf8R6UZYl6fkWTHa1WkFj-OskSUp5Q/exec?mode=viewer";
 const USE_URL = "https://script.google.com/macros/s/AKfycbxQev0GXTduIpwVv3fS4dIHnYBKtBZEdh0iRsq9lE2Li_AktExOdkGPuzQBKHR3M9AdOA/exec";
 const SCHEDULE_URL = "https://script.google.com/macros/s/AKfycbxc3sXqt6yTM_OZugasDjbhDuv4qm_maJRJo7XkbM9uDFQf8YzVoUr2DhrbWxFJz-pg/exec";
-const JOB_URL = "https://script.google.com/macros/s/AKfycbwu3me6U1IZ5JJkNHqf4V14Ecj4fQtfz6NDOe05p0XwqmDyNIKB-UKCPSi1tULrY3Dl/exec";  
-  
+const JOB_URL = "https://script.google.com/macros/s/AKfycbwu3me6U1IZ5JJkNHqf4V14Ecj4fQtfz6NDOe05p0XwqmDyNIKB-UKCPSi1tULrY3Dl/exec";
+const RESUME_URL = "https://script.google.com/macros/s/AKfycbwjseBzgfOs4GirigT3_XB1LCnN2oQCUxI_7oKyupRt5Sp6wkiPJdIkt3yqxsR0cwYf/exec";
+
 const ADMIN_URL = "https://script.google.com/macros/s/AKfycbwuFHe1cBIjUB_tgEQrV4ngESM0M9gp4mDwbRWM5tgfuXxh_mLuREFgWFFbezEPMBNg/exec";
 const UPDATE_API_URL = "https://script.google.com/macros/s/AKfycby6ZroDYpfu5y52VrQ9nTNEEsrC6joYt49zdendeI2du1OtbwcUfz7nAlGMgQeFV5iX/exec";
-const CURRENT_MENU_VERSION = "v2.0.0";
 
+const CURRENT_MENU_VERSION = "v2.0.1";
+
+/* ===== 名前取得 ===== */
 const params = new URLSearchParams(window.location.search);
 const empName = (params.get("name") || "").trim();
 
-function escapeHtml(text) {
-  return String(text || '')
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+function escapeHtml(text){
+  return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
-function renderUserName() {
+function renderUserName(){
   const box = document.getElementById("userBox");
-  if (!box) return;
+  if(!box) return;
 
-  if (empName) {
+  if(empName){
     box.innerHTML = "<b>" + escapeHtml(empName) + "</b> さんでログイン中";
-  } else {
+  }else{
     box.textContent = "名前がありません";
   }
 }
 
-function appendName(url) {
-  let result = url;
-  if (empName) {
+function appendName(url){
+  let result = String(url || "").trim();
+
+  if(!result){
+    alert("URLが設定されていません。");
+    return "";
+  }
+
+  if(empName){
     result += (result.includes("?") ? "&" : "?") + "name=" + encodeURIComponent(empName);
   }
+
+  result += (result.includes("?") ? "&" : "?") + "t=" + Date.now();
+
   return result;
 }
 
-function move(url) {
-  if (!url) {
-    alert("URLが設定されていません。");
-    return;
+function move(url){
+  const target = appendName(url);
+  if(target){
+    location.href = target;
   }
-  location.href = appendName(url);
 }
 
+/* ===== 各メニュー ===== */
 function goAlcohol(){ move(ALCOHOL_URL); }
 function goForm(){ move(FORM_URL); }
 function goProperty(){ move(PROPERTY_URL); }
@@ -279,37 +315,48 @@ function goChat(){ move(CHAT_URL); }
 function goCar(){ move(CAR_URL); }
 function goUse(){ move(USE_URL); }
 function goSchedule(){ move(SCHEDULE_URL); }
+function goJob(){ move(JOB_URL); }
+function goResume(){ move(RESUME_URL); }
 function goPropertyViewer(){ move(VIEWER_URL); }
 
 function goHome(){
   let url = location.origin + location.pathname;
-  if (empName) {
+
+  if(empName){
     url += "?name=" + encodeURIComponent(empName);
   }
+
   url += (url.includes("?") ? "&" : "?") + "t=" + Date.now();
   location.href = url;
 }
 
 function goAdmin(){
-  let url = appendName(ADMIN_URL);
-  url += (url.includes("?") ? "&" : "?") + "t=" + Date.now();
-  location.href = url;
+  move(ADMIN_URL);
 }
 
 function copyForm(){
-  navigator.clipboard.writeText(FORM_URL);
-  alert("コピーしました！");
+  const url = appendName(FORM_URL);
+  if(!url) return;
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(function(){
+      alert("応募フォームURLをコピーしました。");
+    }).catch(function(){
+      prompt("このURLをコピーしてください", url);
+    });
+  }else{
+    prompt("このURLをコピーしてください", url);
+  }
 }
 
-function normalizeVersion(v) {
+/* ===== 更新管理 ===== */
+function normalizeVersion(v){
   return String(v || "").trim().toLowerCase();
 }
 
-function goJob(){ move(JOB_URL); }
-  
-async function checkUpdateInfo() {
-  try {
-    const res = await fetch(UPDATE_API_URL + "?t=" + Date.now(), { cache: "no-store" });
+async function checkUpdateInfo(){
+  try{
+    const res = await fetch(UPDATE_API_URL + "?t=" + Date.now(), { cache:"no-store" });
     const data = await res.json();
 
     const updateOn = data.update_on === true || String(data.update_on).toLowerCase() === "true";
@@ -317,40 +364,44 @@ async function checkUpdateInfo() {
     const newVersion = normalizeVersion(data.version);
     const currentVersion = normalizeVersion(CURRENT_MENU_VERSION);
 
-    if (!updateOn) return;
-    if (newVersion && newVersion === currentVersion) return;
+    if(!updateOn) return;
+    if(newVersion && newVersion === currentVersion) return;
 
     document.getElementById("updateTitle").textContent = data.title || "更新があります";
-    document.getElementById("updateVersion").textContent = data.version ? ("バージョン: " + data.version) : "";
+    document.getElementById("updateVersion").textContent = data.version ? "バージョン: " + data.version : "";
     document.getElementById("updateMessage").textContent = data.message || "最新版へ更新してください。";
 
-    document.getElementById("updateGoBtn").onclick = function() {
+    document.getElementById("updateGoBtn").onclick = function(){
       let newUrl = data.new_url || location.href;
-      if (empName) {
+
+      if(empName){
         newUrl += (newUrl.includes("?") ? "&" : "?") + "name=" + encodeURIComponent(empName);
       }
+
       newUrl += (newUrl.includes("?") ? "&" : "?") + "t=" + Date.now();
       location.href = newUrl;
     };
 
     const laterBtn = document.getElementById("updateLaterBtn");
-    if (forceUpdate) {
+
+    if(forceUpdate){
       laterBtn.style.display = "none";
       document.body.style.overflow = "hidden";
-    } else {
+    }else{
       laterBtn.style.display = "block";
-      laterBtn.onclick = function() {
+      laterBtn.onclick = function(){
         document.getElementById("updateOverlay").style.display = "none";
       };
     }
 
     document.getElementById("updateOverlay").style.display = "flex";
-  } catch (e) {
+
+  }catch(e){
     console.log("更新情報の取得失敗", e);
   }
 }
 
-window.addEventListener("load", function() {
+window.addEventListener("load", function(){
   renderUserName();
   checkUpdateInfo();
 });
