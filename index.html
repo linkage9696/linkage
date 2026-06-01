@@ -405,6 +405,23 @@ window.addEventListener("load", function(){
   renderUserName();
   checkUpdateInfo();
 });
+
+  function goHaken(){
+
+  const name =
+    document.getElementById('nameInput')
+      ? document.getElementById('nameInput').value.trim()
+      : '';
+
+  if(!name){
+    alert('名前を入力してください。');
+    return;
+  }
+
+  location.href =
+    'https://script.google.com/macros/s/AKfycbwDB-fz8gV5BvpLDZPms-Cus5X4dJ26cIyLWkeHGRMA7KnMReTjNQOBBTR0nSdtmYr5/exec?page=haken&name='
+    + encodeURIComponent(name);
+}
 </script>
 
 </body>
