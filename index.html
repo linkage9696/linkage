@@ -408,13 +408,11 @@ window.addEventListener("load", function(){
 
   function goHaken(){
 
-  const name =
-    document.getElementById('nameInput')
-      ? document.getElementById('nameInput').value.trim()
-      : '';
+  const params = new URLSearchParams(location.search);
+  const name = params.get('name') || '';
 
   if(!name){
-    alert('名前を入力してください。');
+    alert('ログイン名が取得できません。');
     return;
   }
 
