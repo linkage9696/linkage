@@ -409,7 +409,18 @@ window.addEventListener("load", function(){
   function goHaken(){
 
   const params = new URLSearchParams(location.search);
-  const name = params.get('name') || '';
+
+  let name = params.get('name') || '';
+
+  if(!name){
+    const box = document.getElementById('userBox');
+    if(box){
+      name = box.textContent
+        .replace('さんでログイン中','')
+        .replace('でログイン中','')
+        .trim();
+    }
+  }
 
   if(!name){
     alert('ログイン名が取得できません。');
@@ -417,7 +428,7 @@ window.addEventListener("load", function(){
   }
 
   location.href =
-    'https://script.google.com/macros/s/AKfycbwDB-fz8gV5BvpLDZPms-Cus5X4dJ26clyLWkeHGRMA7KnMReTjNQOBBTROnSdtmYr5/exec?page=haken&name='
+    'https://script.google.com/macros/s/あなたの最新GAS URL/exec?page=haken&name='
     + encodeURIComponent(name);
 }
 </script>
