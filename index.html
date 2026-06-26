@@ -203,7 +203,7 @@ body{
 <button class="btn job" onclick="goJob()">👥 求職者共有</button>
 <button class="btn blue" onclick="goHaken()">📂 派遣管理書類</button>
 <button class="btn property" onclick="goProperty()">🏠 社宅・物件管理</button> 
-<button class="btn property" onclick="goProperty()">🏠 写真管理</button>
+<button class="btn property" onclick="goPropertyPhoto()">🏠 写真管理</button>
 <button class="btn chat" onclick="goChat()">💬 社内チャット</button>
 <button class="btn viewer" onclick="goPropertyViewer()">🔍 検索</button>
 
@@ -312,7 +312,14 @@ function move(url){
 /* ===== 各メニュー ===== */
 function goAlcohol(){ move(ALCOHOL_URL); }
 function goForm(){ move(FORM_URL); }
-function goProperty(){ move(PROPERTY_URL); }
+function goProperty(){
+  let url = SHATAKU_URL;
+  if(empName){
+    url += "&name=" + encodeURIComponent(empName);
+  }
+  location.href = url;
+}
+function goPropertyPhoto(){ move(PROPERTY_URL); }  
 function goChat(){ move(CHAT_URL); }
 function goCar(){ move(CAR_URL); }
 function goUse(){ move(USE_URL); }
