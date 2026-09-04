@@ -81,7 +81,8 @@ body{
 .admin{ background:linear-gradient(180deg,#64748b,#334155); }
 .job{ background:linear-gradient(180deg,#22c55e,#15803d); }
 .resume{ background:linear-gradient(180deg,#3b82f6,#1d4ed8); }
-
+.advance{ background:linear-gradient(180deg,#f59e0b,#d97706); }
+  
 .bottomNav{
   position:fixed;
   bottom:0;
@@ -204,6 +205,7 @@ body{
 <button class="btn blue" onclick="goHaken()">📂 派遣管理書類</button>
 <button class="btn property" onclick="goProperty()">🏠 社宅・物件管理</button> 
 <button class="btn property" onclick="goPropertyPhoto()">🏠 写真管理</button>
+<button class="btn advance" onclick="goAdvance()">💴 前借管理</button>  
 <button class="btn chat" onclick="goChat()">💬 社内チャット</button>
 <button class="btn viewer" onclick="goPropertyViewer()">🔍 検索</button>
 
@@ -255,6 +257,7 @@ const SCHEDULE_URL = "https://script.google.com/macros/s/AKfycbxc3sXqt6yTM_OZuga
 const JOB_URL = "https://script.google.com/macros/s/AKfycbwu3me6U1IZ5JJkNHqf4V14Ecj4fQtfz6NDOe05p0XwqmDyNIKB-UKCPSi1tULrY3Dl/exec";
 const RESUME_URL = "https://script.google.com/macros/s/AKfycbwDB-fz8gV5BvpLDZPms-Cus5X4dJ26clyLWkeHGRMA7KnMReTjNQOBBTROnSdtmYr5/exec";
 const SHATAKU_URL =　"https://script.google.com/macros/s/AKfycbwDB-fz8gV5BvpLDZPms-Cus5X4dJ26clyLWkeHGRMA7KnMReTjNQOBBTROnSdtmYr5/exec?page=property";
+const ADVANCE_URL = "ここに前借管理GASのURL";  
   
 const ADMIN_URL = "https://script.google.com/macros/s/AKfycbwuFHe1cBIjUB_tgEQrV4ngESM0M9gp4mDwbRWM5tgfuXxh_mLuREFgWFFbezEPMBNg/exec";
 const UPDATE_API_URL = "https://script.google.com/macros/s/AKfycby6ZroDYpfu5y52VrQ9nTNEEsrC6joYt49zdendeI2du1OtbwcUfz7nAlGMgQeFV5iX/exec";
@@ -327,7 +330,8 @@ function goSchedule(){ move(SCHEDULE_URL); }
 function goJob(){ move(JOB_URL); }
 function goResume(){ move(RESUME_URL); }
 function goPropertyViewer(){ move(VIEWER_URL); }
-
+function goAdvance(){ move(ADVANCE_URL); }
+  
 function goHome(){
   let url = location.origin + location.pathname;
 
