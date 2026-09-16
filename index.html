@@ -181,6 +181,12 @@ body{
     flex-direction:column;
   }
 }
+
+/* ログイン認証が終わるまで画面を非表示 */
+body{
+  visibility:hidden;
+}
+  
 </style>
 </head>
 
@@ -511,6 +517,9 @@ window.addEventListener("load", async function(){
   if(!loginOk){
     return;
   }
+
+  // 認証成功後にメニューを表示
+  document.body.style.visibility = "visible";
 
   renderUserName();
   checkUpdateInfo();
