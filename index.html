@@ -462,6 +462,47 @@ async function verifyMenuLogin(){
     return false;
   }
 }
+
+/* ===== 無操作ログアウト ===== */
+
+// テスト用：1分
+const IDLE_TIMEOUT = 60 * 1000;
+
+let idleTimer = null;
+
+function resetIdleTimer(){
+
+  clearTimeout(idleTimer);
+
+  idleTimer = setTimeout(function(){
+
+    const LOGIN_URL =
+      "https://script.google.com/macros/s/AKfycbzEt-U0hd9QuoPOdDmWxJWrYejnQdrBPkwpXfdaHIchde5uPS8RJ5c8f2mPpifZ_MxA/exec";
+
+    window.location.replace(LOGIN_URL);
+
+  }, IDLE_TIMEOUT);
+}
+
+function startIdleTimer(){
+
+  const events = [
+    "click",
+    "touchstart",
+    "keydown",
+    "scroll"
+  ];
+
+  events.forEach(function(eventName){
+    window.addEventListener(
+      eventName,
+      resetIdleTimer,
+      { passive: true }
+    );
+  });
+
+  resetIdleTimer();
+}
   
 window.addEventListener("load", async function(){
 
@@ -473,6 +514,8 @@ window.addEventListener("load", async function(){
 
   renderUserName();
   checkUpdateInfo();
+
+  startIdleTimer();
 });
 
   function goHaken(){
