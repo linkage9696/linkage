@@ -264,9 +264,14 @@ const UPDATE_API_URL = "https://script.google.com/macros/s/AKfycby6ZroDYpfu5y52V
 
 const CURRENT_MENU_VERSION = "v2.0.4";
 
-/* ===== 名前取得 ===== */
+/* ===== ログイン情報取得 ===== */
 const params = new URLSearchParams(window.location.search);
-const empName = (params.get("name") || "").trim();
+
+const empName =
+  (params.get("name") || "").trim();
+
+const loginToken =
+  (params.get("token") || "").trim();
 
 function escapeHtml(text){
   return String(text || "")
@@ -414,9 +419,39 @@ async function checkUpdateInfo(){
   }
 }
 
+async function testLoginToken(){
+
+  if(!loginToken){
+    console.log("ログイントークンなし");
+    return;
+  }
+
+  const VERIFY_URL =
+    "https://script.google.com/macros/s/AKfycbzEt-U0hd9QuoPOdDmWxJWrYejnQdrBPkwpXfdaHIchde5uPS8RJ5c8f2mPpifZ_MxA/exec";
+
+  try{
+
+    const url =
+      VERIFY_URL +
+      "?action=verify&token=" +
+      encodeURIComponent(loginToken);
+
+    const response = await fetch(url);
+    const result = await response.json();
+
+    console.log("ログイン認証結果:", result);
+
+  }catch(e){
+
+    console.log("ログイン認証通信エラー:", e);
+
+  }
+}
+  
 window.addEventListener("load", function(){
   renderUserName();
   checkUpdateInfo();
+  testLoginToken();
 });
 
   function goHaken(){
