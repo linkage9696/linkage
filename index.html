@@ -419,39 +419,60 @@ async function checkUpdateInfo(){
   }
 }
 
-async function testLoginToken(){
+async function verifyMenuLogin(){
 
-  if(!loginToken){
-    console.log("ログイントークンなし");
-    return;
-  }
-
-  const VERIFY_URL =
+  const LOGIN_URL =
     "https://script.google.com/macros/s/AKfycbzEt-U0hd9QuoPOdDmWxJWrYejnQdrBPkwpXfdaHIchde5uPS8RJ5c8f2mPpifZ_MxA/exec";
+
+  // 名前またはトークンが無い場合
+  if(!empName || !loginToken){
+    window.location.replace(LOGIN_URL);
+    return false;
+  }
 
   try{
 
     const url =
-      VERIFY_URL +
+      LOGIN_URL +
       "?action=verify&token=" +
       encodeURIComponent(loginToken);
 
     const response = await fetch(url);
     const result = await response.json();
 
-    console.log("ログイン認証結果:", result);
+    // 認証失敗
+    if(
+      !result ||
+      result.success !== true ||
+      result.name !== empName
+    ){
+      window.location.replace(LOGIN_URL);
+      return false;
+    }
+
+    // 認証成功
+    return true;
 
   }catch(e){
 
     console.log("ログイン認証通信エラー:", e);
 
+    // 通信できない場合もメニューを使用させない
+    window.location.replace(LOGIN_URL);
+    return false;
   }
 }
   
-window.addEventListener("load", function(){
+window.addEventListener("load", async function(){
+
+  const loginOk = await verifyMenuLogin();
+
+  if(!loginOk){
+    return;
+  }
+
   renderUserName();
   checkUpdateInfo();
-  testLoginToken();
 });
 
   function goHaken(){
