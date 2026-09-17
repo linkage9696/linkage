@@ -568,12 +568,15 @@ window.addEventListener("load", async function(){
 
   // ログインした社員の利用メニューを保存
   window.allowedMenus =
-    String(loginResult.allowedMenus || "").trim();
+  String(loginResult.allowedMenus || "").trim();
 
-  // 認証成功後にメニューを表示
-  document.body.style.visibility = "visible";
+// 利用できるメニューだけ表示
+applyMenuPermissions();
 
-  renderUserName();
+// 認証成功後にメニューを表示
+document.body.style.visibility = "visible";
+
+renderUserName();
   checkUpdateInfo();
 
   startIdleTimer();
