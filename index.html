@@ -525,11 +525,15 @@ function startIdleTimer(){
   
 window.addEventListener("load", async function(){
 
-  const loginOk = await verifyMenuLogin();
+  const loginResult = await verifyMenuLogin();
 
-  if(!loginOk){
+  if(!loginResult){
     return;
   }
+
+  // ログインした社員の利用メニューを保存
+  window.allowedMenus =
+    String(loginResult.allowedMenus || "").trim();
 
   // 認証成功後にメニューを表示
   document.body.style.visibility = "visible";
