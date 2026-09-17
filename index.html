@@ -397,27 +397,38 @@ function applyMenuPermissions(){
     return;
   }
 
-  // alcoholだけの場合
-  if(menus === "alcohol"){
+  // 許可されたメニューを配列にする
+  const allowed =
+    menus
+      .split(",")
+      .map(function(item){
+        return item.trim().toLowerCase();
+      })
+      .filter(Boolean);
 
-    document.querySelectorAll(".btn").forEach(function(button){
-      button.style.display = "none";
-    });
+  // まず全メニューボタンを非表示
+  document.querySelectorAll(".btn").forEach(function(button){
+    button.style.display = "none";
+  });
 
-    const alcoholButton =
-      document.querySelector(".btn.alcohol");
+  // 許可されたボタンだけ表示
+  allowed.forEach(function(menu){
 
-    if(alcoholButton){
-      alcoholButton.style.display = "block";
+    const button =
+      document.querySelector(".btn." + menu);
+
+    if(button){
+      button.style.display = "block";
     }
 
-    // 下部メニューも非表示
-    const bottomNav =
-      document.querySelector(".bottomNav");
+  });
 
-    if(bottomNav){
-      bottomNav.style.display = "none";
-    }
+  // 制限ユーザーでは下部メニューを非表示
+  const bottomNav =
+    document.querySelector(".bottomNav");
+
+  if(bottomNav){
+    bottomNav.style.display = "none";
   }
 }
   
