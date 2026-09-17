@@ -308,10 +308,23 @@ function appendName(url){
   }
 
   if(empName){
-    result += (result.includes("?") ? "&" : "?") + "name=" + encodeURIComponent(empName);
+    result +=
+      (result.includes("?") ? "&" : "?") +
+      "name=" +
+      encodeURIComponent(empName);
   }
 
-  result += (result.includes("?") ? "&" : "?") + "t=" + Date.now();
+  if(loginToken){
+    result +=
+      (result.includes("?") ? "&" : "?") +
+      "token=" +
+      encodeURIComponent(loginToken);
+  }
+
+  result +=
+    (result.includes("?") ? "&" : "?") +
+    "t=" +
+    Date.now();
 
   return result;
 }
