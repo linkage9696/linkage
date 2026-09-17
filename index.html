@@ -386,6 +386,41 @@ function copyForm(){
   }
 }
 
+/* ===== 利用メニュー制御 ===== */
+function applyMenuPermissions(){
+
+  const menus =
+    String(window.allowedMenus || "").trim();
+
+  // ALLなら全メニュー表示
+  if(menus.toUpperCase() === "ALL"){
+    return;
+  }
+
+  // alcoholだけの場合
+  if(menus === "alcohol"){
+
+    document.querySelectorAll(".btn").forEach(function(button){
+      button.style.display = "none";
+    });
+
+    const alcoholButton =
+      document.querySelector(".btn.alcohol");
+
+    if(alcoholButton){
+      alcoholButton.style.display = "block";
+    }
+
+    // 下部メニューも非表示
+    const bottomNav =
+      document.querySelector(".bottomNav");
+
+    if(bottomNav){
+      bottomNav.style.display = "none";
+    }
+  }
+}
+  
 /* ===== 更新管理 ===== */
 function normalizeVersion(v){
   return String(v || "").trim().toLowerCase();
