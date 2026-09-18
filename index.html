@@ -736,6 +736,62 @@ async function verifyMenuLogin(){
   const LOGIN_URL =
     "https://script.google.com/macros/s/AKfycbzEt-U0hd9QuoPOdDmWxJWrYejnQdrBPkwpXfdaHIchde5uPS8RJ5c8f2mPpifZ_MxA/exec";
 
+  // ホーム画面登録用
+  const setupMode =
+    new URLSearchParams(window.location.search).get("setup") === "1";
+
+  if(setupMode){
+    document.body.style.visibility = "visible";
+
+    document.body.innerHTML = `
+      <div style="
+        max-width:420px;
+        margin:60px auto;
+        padding:30px 20px;
+        text-align:center;
+      ">
+        <img src="icon.png"
+             style="width:110px;height:110px;object-fit:contain;">
+
+        <div style="
+          font-size:30px;
+          font-weight:bold;
+          margin-top:15px;
+          color:#0b2d62;
+        ">
+          Linkage
+        </div>
+
+        <div style="
+          margin-top:12px;
+          color:#71809a;
+          line-height:1.7;
+        ">
+          このページをiPhoneの<br>
+          「ホーム画面に追加」してください。
+        </div>
+
+        <button
+          onclick="location.href='${LOGIN_URL}'"
+          style="
+            width:100%;
+            margin-top:30px;
+            padding:16px;
+            border:0;
+            border-radius:14px;
+            background:#2563eb;
+            color:white;
+            font-size:19px;
+            font-weight:bold;
+          ">
+          ログイン画面へ
+        </button>
+      </div>
+    `;
+
+    return false;
+  }
+
   // 名前またはトークンが無い場合
   if(!empName || !loginToken){
     window.location.replace(LOGIN_URL);
