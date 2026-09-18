@@ -313,23 +313,76 @@ body{
 
 <div class="nameBox" id="userBox">ログイン中</div>
 
-<button class="btn alcohol" onclick="goAlcohol()">🚗 アルコールチェック</button>
-<button class="btn form" onclick="goForm()">📄 応募フォームを開く</button>
-<button class="btn copy" onclick="copyForm()">🔗 URLコピー</button>
+<button class="btn alcohol" onclick="goAlcohol()">
+  <span class="menuTitle">アルコールチェック</span>
+  <span class="menuDesc">アルコール検査の記録・確認</span>
+</button>
 
-<button class="btn car" onclick="goCar()">🚘 車両管理</button>
-<button class="btn use" onclick="goUse()">🚚 車両使用管理</button>
-<button class="btn schedule" onclick="goSchedule()">🗓️ スケジュール</button>
-<button class="btn job" onclick="goJob()">👥 求職者共有</button>
-<button class="btn blue" onclick="goHaken()">📂 派遣管理書類</button>
-<button class="btn property" onclick="goProperty()">🏠 社宅・物件管理</button> 
-<button class="btn property" onclick="goPropertyPhoto()">🏠 写真管理</button>
-<button class="btn advance" onclick="goAdvance()">💴 前借管理</button>  
-<button class="btn chat" onclick="goChat()">💬 社内チャット</button>
-<button class="btn viewer" onclick="goPropertyViewer()">🔍 検索</button>
+<button class="btn form" onclick="goForm()">
+  <span class="menuTitle">応募フォームを開く</span>
+  <span class="menuDesc">応募フォームの確認・管理</span>
+</button>
+
+<button class="btn copy" onclick="copyForm()">
+  <span class="menuTitle">URLコピー</span>
+  <span class="menuDesc">各種URLのコピー</span>
+</button>
+
+<button class="btn car" onclick="goCar()">
+  <span class="menuTitle">車両管理</span>
+  <span class="menuDesc">車両情報の登録・管理</span>
+</button>
+
+<button class="btn use" onclick="goUse()">
+  <span class="menuTitle">車両使用管理</span>
+  <span class="menuDesc">車両の使用状況管理</span>
+</button>
+
+<button class="btn schedule" onclick="goSchedule()">
+  <span class="menuTitle">スケジュール</span>
+  <span class="menuDesc">スケジュールの確認・管理</span>
+</button>
+
+<button class="btn job" onclick="goJob()">
+  <span class="menuTitle">求職者共有</span>
+  <span class="menuDesc">求職者情報の共有・管理</span>
+</button>
+
+<button class="btn blue" onclick="goHaken()">
+  <span class="menuTitle">派遣管理書類</span>
+  <span class="menuDesc">派遣関連書類の管理</span>
+</button>
+
+<button class="btn property" onclick="goProperty()">
+  <span class="menuTitle">社宅・物件管理</span>
+  <span class="menuDesc">社宅・物件情報の管理</span>
+</button>
+
+<button class="btn property" onclick="goPropertyPhoto()">
+  <span class="menuTitle">写真管理</span>
+  <span class="menuDesc">写真データの管理</span>
+</button>
+
+<button class="btn advance" onclick="goAdvance()">
+  <span class="menuTitle">前借管理</span>
+  <span class="menuDesc">前借の申請・管理</span>
+</button>
+
+<button class="btn chat" onclick="goChat()">
+  <span class="menuTitle">社内チャット</span>
+  <span class="menuDesc">社内での連絡・共有</span>
+</button>
+
+<button class="btn viewer" onclick="goPropertyViewer()">
+  <span class="menuTitle">検索</span>
+  <span class="menuDesc">各種情報の検索</span>
+</button>
 
 <div id="adminArea" style="display:block;">
-  <button class="btn admin" onclick="goAdmin()">⚙️ 管理画面</button>
+  <button class="btn admin" onclick="goAdmin()">
+    <span class="menuTitle">管理画面</span>
+    <span class="menuDesc">システムの設定・管理</span>
+  </button>
 </div>
 
 <div class="bottomNav">
