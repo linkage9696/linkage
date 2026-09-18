@@ -18,70 +18,183 @@
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:#eef3fb;
+  background:#f3f7fc;
+  color:#0f2d5c;
   text-align:center;
-  padding-bottom:80px;
+  padding-bottom:90px;
 }
 
 .header{
-  padding:30px 20px 10px;
+  padding:18px 20px 8px;
 }
 
 .logo{
-  width:100px;
-  height:100px;
+  width:90px;
+  height:90px;
   margin:auto;
   object-fit:contain;
 }
 
 .title{
-  font-size:32px;
-  font-weight:bold;
-  margin-top:8px;
+  font-size:30px;
+  font-weight:700;
+  color:#0b2d62;
+  margin-top:5px;
+  letter-spacing:.2px;
 }
 
 .sub{
-  color:#666;
-  margin-bottom:20px;
+  color:#71809a;
+  font-size:16px;
+  margin-top:2px;
+  margin-bottom:16px;
 }
 
 .nameBox{
-  max-width:480px;
-  margin:0 auto 15px;
-  padding:10px;
+  width:calc(100% - 32px);
+  max-width:560px;
+  box-sizing:border-box;
+  margin:0 auto 14px;
+  padding:14px 16px;
   background:#fff;
-  border-radius:12px;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  color:#0f2d5c;
+  border:1px solid #edf1f6;
+  border-radius:14px;
+  box-shadow:0 5px 16px rgba(38,70,110,.08);
+  font-size:15px;
 }
 
 .btn{
-  width:90%;
-  max-width:480px;
-  margin:10px auto;
-  padding:15px;
-  font-size:16px;
-  border:none;
-  border-radius:14px;
-  color:#fff;
+  position:relative;
+  width:calc(100% - 32px);
+  max-width:560px;
+  min-height:72px;
+  margin:9px auto;
+  padding:10px 54px 10px 92px;
+  box-sizing:border-box;
+
+  border:1px solid #edf1f6;
+  border-radius:16px;
+  background:#fff;
+
+  color:#0f2d5c;
   cursor:pointer;
   display:block;
-  font-weight:bold;
-  box-shadow:0 3px 8px rgba(0,0,0,.16);
+
+  text-align:left;
+  font-size:17px;
+  font-weight:700;
+
+  box-shadow:0 5px 16px rgba(38,70,110,.08);
+
+  transition:
+    transform .12s ease,
+    box-shadow .12s ease,
+    background .12s ease;
 }
 
-.alcohol{ background:linear-gradient(180deg,#3b82f6,#1d4ed8); }
-.form{ background:linear-gradient(180deg,#10b981,#047857); }
-.copy{ background:linear-gradient(180deg,#f59e0b,#b45309); }
-.property{ background:linear-gradient(180deg,#8b5cf6,#5b21b6); }
-.chat{ background:linear-gradient(180deg,#ec4899,#be185d); }
-.viewer{ background:linear-gradient(180deg,#14b8a6,#0f766e); }
-.car{ background:linear-gradient(180deg,#0ea5e9,#0369a1); }
-.use{ background:linear-gradient(135deg,#36d1dc,#5b86e5); }
-.schedule{ background:linear-gradient(180deg,#7c3aed,#5b21b6); }
-.admin{ background:linear-gradient(180deg,#64748b,#334155); }
-.job{ background:linear-gradient(180deg,#22c55e,#15803d); }
-.resume{ background:linear-gradient(180deg,#3b82f6,#1d4ed8); }
-.advance{ background:linear-gradient(180deg,#f59e0b,#d97706); }
+.btn:active{
+  transform:scale(.985);
+  background:#f8fbff;
+  box-shadow:0 2px 8px rgba(38,70,110,.08);
+}
+
+/* 左側の丸いアイコン */
+.btn::before{
+  position:absolute;
+  left:16px;
+  top:50%;
+  transform:translateY(-50%);
+
+  width:54px;
+  height:54px;
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:25px;
+  font-weight:normal;
+}
+
+/* 右側の矢印 */
+.btn::after{
+  content:"›";
+  position:absolute;
+  right:20px;
+  top:50%;
+  transform:translateY(-52%);
+  color:#17477e;
+  font-size:32px;
+  font-weight:400;
+}
+
+/* 各メニューのアイコン */
+.alcohol::before{
+  content:"🚗";
+  background:#e7f2ff;
+}
+
+.form::before{
+  content:"📄";
+  background:#e7f9ed;
+}
+
+.copy::before{
+  content:"🔗";
+  background:#fff1e3;
+}
+
+.car::before{
+  content:"🚘";
+  background:#e7f2ff;
+}
+
+.use::before{
+  content:"🚚";
+  background:#e1faf8;
+}
+
+.schedule::before{
+  content:"🗓️";
+  background:#eeebff;
+}
+
+.job::before{
+  content:"👥";
+  background:#e4f8ee;
+}
+
+.blue::before{
+  content:"📂";
+  background:#fff4d9;
+}
+
+.property::before{
+  content:"🏠";
+  background:#efebff;
+}
+
+.advance::before{
+  content:"💴";
+  background:#fff2dc;
+}
+
+.chat::before{
+  content:"💬";
+  background:#ffe7f0;
+}
+
+.viewer::before{
+  content:"🔍";
+  background:#e1f8fc;
+}
+
+.admin::before{
+  content:"⚙️";
+  background:#e9eef5;
+}
   
 .bottomNav{
   position:fixed;
