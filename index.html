@@ -738,6 +738,38 @@ async function verifyMenuLogin(){
   const LOGIN_URL =
     "https://script.google.com/macros/s/AKfycbzEt-U0hd9QuoPOdDmWxJWrYejnQdrBPkwpXfdaHIchde5uPS8RJ5c8f2mPpifZ_MxA/exec";
 
+// GASのログイン認証結果を受け取る
+window.addEventListener("message", function(event) {
+
+  // Google Apps Script以外からの通知は受け取らない
+  const allowedOrigins = [
+    "https://script.google.com",
+    "https://script.googleusercontent.com"
+  ];
+
+  if (!allowedOrigins.includes(event.origin)) {
+    return;
+  }
+
+  const data = event.data;
+
+  if (
+    !data ||
+    data.type !== "linkage-login-success" ||
+    !data.name ||
+    !data.token
+  ) {
+    return;
+  }
+
+  const menuUrl =
+    "https://linkage9696.github.io/linkage/" +
+    "?name=" + encodeURIComponent(data.name) +
+    "&token=" + encodeURIComponent(data.token);
+
+  window.location.replace(menuUrl);
+});
+  
  // ホーム画面・ログイン用
 const setupMode =
   new URLSearchParams(window.location.search).get("setup") === "1";
