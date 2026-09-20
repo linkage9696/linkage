@@ -825,38 +825,6 @@ async function checkLoginResult(requestId, count) {
     );
   }, 1000);
 }
-  
-// GASのログイン認証結果を受け取る
-window.addEventListener("message", function(event) {
-
-  // Google Apps Script以外からの通知は受け取らない
-  const allowedOrigins = [
-    "https://script.google.com",
-    "https://script.googleusercontent.com"
-  ];
-
-  if (!allowedOrigins.includes(event.origin)) {
-    return;
-  }
-
-  const data = event.data;
-
-  if (
-    !data ||
-    data.type !== "linkage-login-success" ||
-    !data.name ||
-    !data.token
-  ) {
-    return;
-  }
-
-  const menuUrl =
-    "https://linkage9696.github.io/linkage/" +
-    "?name=" + encodeURIComponent(data.name) +
-    "&token=" + encodeURIComponent(data.token);
-
-  window.location.replace(menuUrl);
-});
 
 async function verifyMenuLogin(){
   
