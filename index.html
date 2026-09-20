@@ -780,10 +780,11 @@ if(setupMode){
       </div>
 
       <form
-        method="POST"
-        action="${LOGIN_URL}"
-        style="width:100%;"
-      >
+  method="POST"
+  action="${LOGIN_URL}"
+  target="loginFrame"
+  style="width:100%;"
+>
 
         <input
           type="hidden"
@@ -852,6 +853,12 @@ if(setupMode){
         </button>
 
       </form>
+
+       <iframe
+  name="loginFrame"
+  id="loginFrame"
+  style="display:none;"
+></iframe>
 
       <div
         id="setupLoginMessage"
