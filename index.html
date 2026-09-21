@@ -814,24 +814,42 @@ async function checkLoginResult(requestId, count) {
       await response.json();
 
     // ログイン成功
-    if (
-      result &&
-      result.success === true &&
-      result.name &&
-      result.token
-    ) {
+if (
+  result &&
+  result.success === true &&
+  result.name &&
+  result.token
+) {
 
-      const menuUrl =
-        "https://linkage9696.github.io/linkage/" +
-        "?name=" +
-        encodeURIComponent(result.name) +
-        "&token=" +
-        encodeURIComponent(result.token);
+  const menuUrl =
+    "https://linkage9696.github.io/linkage/" +
+    "?name=" +
+    encodeURIComponent(result.name) +
+    "&token=" +
+    encodeURIComponent(result.token);
 
-      window.location.replace(menuUrl);
-      return;
-    }
+  window.location.replace(menuUrl);
+  return;
+}
 
+
+// ログイン失敗（PIN間違いなど）
+if (
+  result &&
+  result.success === false
+) {
+
+  const message =
+    document.getElementById("setupLoginMessage");
+
+  if(message){
+    message.style.color = "#dc2626";
+    message.textContent =
+      result.message || "暗証番号が違います。";
+  }
+
+  return;
+}
   } catch (error) {
 
     console.log(
