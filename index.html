@@ -667,13 +667,13 @@ function applyMenuPermissions(){
 
   });
 
-  // 制限ユーザーでは下部メニューを非表示
-  const bottomNav =
-    document.querySelector(".bottomNav");
+  // ホームは権限に関係なく全員に表示
+const bottomNav =
+  document.querySelector(".bottomNav");
 
-  if(bottomNav){
-    bottomNav.style.display = "none";
-  }
+if(bottomNav){
+  bottomNav.style.display = "flex";
+}
 }
   
 /* ===== 更新管理 ===== */
