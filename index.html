@@ -1151,9 +1151,13 @@ window.addEventListener("load", async function(){
     return;
   }
 
-  // ログインした社員の利用メニューを保存
-  window.allowedMenus =
+  // ログインした社員の利用メニューを保存（G列）
+window.allowedMenus =
   String(loginResult.allowedMenus || "").trim();
+
+// ログインした社員の管理権限を保存（H列）
+window.managementPermissions =
+  String(loginResult.managementPermissions || "").trim();
 
 // 利用できるメニューだけ表示
 applyMenuPermissions();
