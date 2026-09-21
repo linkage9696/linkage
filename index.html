@@ -863,8 +863,17 @@ if (
 }
 
 
-// ログイン失敗（PIN間違いなど）
+// まだGAS側でログイン処理中
 if (
+  result &&
+  result.success === false &&
+  result.waiting === true
+) {
+  // 下の再確認処理へ進む
+}
+
+// 本当にログイン失敗（PIN間違いなど）
+else if (
   result &&
   result.success === false
 ) {
