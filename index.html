@@ -636,44 +636,72 @@ function applyMenuPermissions(){
   const menus =
     String(window.allowedMenus || "").trim();
 
-  // ALLなら全メニュー表示
-  if(menus.toUpperCase() === "ALL"){
-    return;
+  const isAll =
+    menus.toUpperCase() === "ALL";
+
+  const allowed =
+    isAll
+      ? []
+      : menus
+          .split(",")
+          .map(function(item){
+            return item.trim().toLowerCase();
+          })
+          .filter(Boolean);
+
+
+  // ===== 通常メニュー =====
+  if(!isAll){
+
+    // まず通常メニューを全部非表示
+    document.querySelectorAll(".btn").forEach(function(button){
+      button.style.display = "none";
+    });
+
+    // G列にあるメニューだけ表示
+    allowed.forEach(function(menu){
+
+      const button =
+        document.querySelector(".btn." + menu);
+
+      if(button){
+        button.style.display = "block";
+      }
+
+    });
+
   }
 
-  // 許可されたメニューを配列にする
-  const allowed =
-    menus
-      .split(",")
-      .map(function(item){
-        return item.trim().toLowerCase();
-      })
-      .filter(Boolean);
 
-  // まず全メニューボタンを非表示
-  document.querySelectorAll(".btn").forEach(function(button){
-    button.style.display = "none";
-  });
+  // ===== 下部メニュー =====
 
-  // 許可されたボタンだけ表示
-  allowed.forEach(function(menu){
+  // ホームは全員表示
+  const navHome = document.querySelector(".navHome");
+  if(navHome){
+    navHome.style.display = "flex";
+  }
 
-    const button =
-      document.querySelector(".btn." + menu);
+  // 車両：car または ALL
+  const navCar = document.querySelector(".navCar");
+  if(navCar){
+    navCar.style.display =
+      (isAll || allowed.includes("car")) ? "flex" : "none";
+  }
 
-    if(button){
-      button.style.display = "block";
-    }
+  // 使用：use または ALL
+  const navUse = document.querySelector(".navUse");
+  if(navUse){
+    navUse.style.display =
+      (isAll || allowed.includes("use")) ? "flex" : "none";
+  }
 
-  });
+  // チャット：chat または ALL
+  const navChat = document.querySelector(".navChat");
+  if(navChat){
+    navChat.style.display =
+      (isAll || allowed.includes("chat")) ? "flex" : "none";
+  }
 
-  // ホームは権限に関係なく全員に表示
-const bottomNav =
-  document.querySelector(".bottomNav");
-
-if(bottomNav){
-  bottomNav.style.display = "flex";
-}
 }
   
 /* ===== 更新管理 ===== */
