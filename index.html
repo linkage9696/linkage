@@ -616,10 +616,6 @@ function goHome(){
   location.href = url;
 }
 
-  url += (url.includes("?") ? "&" : "?") + "t=" + Date.now();
-  location.href = url;
-}
-
 function goAdmin(){
   move(ADMIN_URL);
 }
