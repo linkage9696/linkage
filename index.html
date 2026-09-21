@@ -695,11 +695,41 @@ function applyMenuPermissions(){
       (isAll || allowed.includes("use")) ? "flex" : "none";
   }
 
-  // チャット：chat または ALL
+    // チャット：chat または ALL
   const navChat = document.querySelector(".navChat");
   if(navChat){
     navChat.style.display =
       (isAll || allowed.includes("chat")) ? "flex" : "none";
+  }
+
+
+  // ===== 管理権限制御（H列） =====
+
+  const permissions =
+    String(window.managementPermissions || "").trim();
+
+  const managementAll =
+    permissions.toUpperCase() === "ALL";
+
+  const managementAllowed =
+    managementAll
+      ? []
+      : permissions
+          .split(",")
+          .map(function(item){
+            return item.trim().toLowerCase();
+          })
+          .filter(Boolean);
+
+  // H列に管理権限がある人だけ「管理画面」を表示
+  const adminButton =
+    document.querySelector(".btn.admin");
+
+  if(adminButton){
+    adminButton.style.display =
+      (managementAll || managementAllowed.length > 0)
+        ? "block"
+        : "none";
   }
 
 }
