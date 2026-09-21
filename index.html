@@ -612,6 +612,21 @@ function goHome(){
     url += "?name=" + encodeURIComponent(empName);
   }
 
+  if(loginToken){
+    url +=
+      (url.includes("?") ? "&" : "?") +
+      "token=" +
+      encodeURIComponent(loginToken);
+  }
+
+  url +=
+    (url.includes("?") ? "&" : "?") +
+    "t=" +
+    Date.now();
+
+  location.href = url;
+}
+
   url += (url.includes("?") ? "&" : "?") + "t=" + Date.now();
   location.href = url;
 }
