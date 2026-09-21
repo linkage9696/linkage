@@ -441,7 +441,7 @@ body{
 
 <div class="bottomNav">
 
-  <button class="navBtn" onclick="goHome()">
+  <button class="navBtn navHome" onclick="goHome()">
     <span class="navIcon">
       <svg viewBox="0 0 24 24">
         <path d="M3 11L12 3L21 11"/>
@@ -450,6 +450,40 @@ body{
       </svg>
     </span>
     ホーム
+  </button>
+
+  <button class="navBtn navCar" onclick="goCar()">
+    <span class="navIcon">
+      <svg viewBox="0 0 24 24">
+        <path d="M5 17H19"/>
+        <path d="M4 17V12L6 7H18L20 12V17"/>
+        <path d="M6 12H18"/>
+        <circle cx="7" cy="17" r="2"/>
+        <circle cx="17" cy="17" r="2"/>
+      </svg>
+    </span>
+    車両
+  </button>
+
+  <button class="navBtn navUse" onclick="goUse()">
+    <span class="navIcon">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 6H14V17H3Z"/>
+        <path d="M14 10H18L21 13V17H14Z"/>
+        <circle cx="7" cy="18" r="2"/>
+        <circle cx="18" cy="18" r="2"/>
+      </svg>
+    </span>
+    使用
+  </button>
+
+  <button class="navBtn navChat" onclick="goChat()">
+    <span class="navIcon">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 5H20V16H9L4 20V5Z"/>
+      </svg>
+    </span>
+    チャット
   </button>
 
 </div>
