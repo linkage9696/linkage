@@ -606,16 +606,12 @@ function goPropertyViewer(){ move(VIEWER_URL); }
 function goAdvance(){ move(ADVANCE_URL); }
   
 function goHome(){
-  let url = location.origin + location.pathname;
-
-  if(empName){
-    url += "?name=" + encodeURIComponent(empName);
-  }
-
-  url += (url.includes("?") ? "&" : "?") + "t=" + Date.now();
-  location.href = url;
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
-
+  
 function goAdmin(){
   move(ADMIN_URL);
 }
