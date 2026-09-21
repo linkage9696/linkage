@@ -612,7 +612,18 @@ function goHome(){
     url += "?name=" + encodeURIComponent(empName);
   }
 
-  url += (url.includes("?") ? "&" : "?") + "t=" + Date.now();
+  if(loginToken){
+    url +=
+      (url.includes("?") ? "&" : "?") +
+      "token=" +
+      encodeURIComponent(loginToken);
+  }
+
+  url +=
+    (url.includes("?") ? "&" : "?") +
+    "t=" +
+    Date.now();
+
   location.href = url;
 }
 
