@@ -589,11 +589,7 @@ function move(url){
 function goAlcohol(){ move(ALCOHOL_URL); }
 function goForm(){ move(FORM_URL); }
 function goProperty(){
-  let url = SHATAKU_URL;
-  if(empName){
-    url += "&name=" + encodeURIComponent(empName);
-  }
-  location.href = url;
+  location.href = appendName(SHATAKU_URL);
 }
 function goPropertyPhoto(){
   const url = SHATAKU_URL.replace('page=property', 'page=shataku');
