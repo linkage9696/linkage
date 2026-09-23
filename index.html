@@ -596,13 +596,8 @@ function goProperty(){
   location.href = url;
 }
 function goPropertyPhoto(){
-  let url = SHATAKU_URL.replace('page=property', 'page=shataku');
-
-  if(empName){
-    url += "&name=" + encodeURIComponent(empName);
-  }
-
-  location.href = url;
+  const url = SHATAKU_URL.replace('page=property', 'page=shataku');
+  location.href = appendName(url);
 }
 function goChat(){ move(CHAT_URL); }
 function goCar(){ move(CAR_URL); }
