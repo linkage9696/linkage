@@ -756,15 +756,29 @@ async function checkUpdateInfo(){
     document.getElementById("updateMessage").textContent = data.message || "最新版へ更新してください。";
 
     document.getElementById("updateGoBtn").onclick = function(){
-      let newUrl = data.new_url || location.href;
+  let newUrl = data.new_url || location.href;
 
-      if(empName){
-        newUrl += (newUrl.includes("?") ? "&" : "?") + "name=" + encodeURIComponent(empName);
-      }
+  if(empName){
+    newUrl +=
+      (newUrl.includes("?") ? "&" : "?") +
+      "name=" +
+      encodeURIComponent(empName);
+  }
 
-      newUrl += (newUrl.includes("?") ? "&" : "?") + "t=" + Date.now();
-      location.href = newUrl;
-    };
+  if(loginToken){
+    newUrl +=
+      (newUrl.includes("?") ? "&" : "?") +
+      "token=" +
+      encodeURIComponent(loginToken);
+  }
+
+  newUrl +=
+    (newUrl.includes("?") ? "&" : "?") +
+    "t=" +
+    Date.now();
+
+  location.href = newUrl;
+};
 
     const laterBtn = document.getElementById("updateLaterBtn");
 
