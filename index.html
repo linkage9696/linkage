@@ -763,13 +763,29 @@ async function checkUpdateInfo(){
     const res = await fetch(UPDATE_API_URL + "?t=" + Date.now(), { cache:"no-store" });
     const data = await res.json();
 
-    const updateOn = data.update_on === true || String(data.update_on).toLowerCase() === "true";
-    const forceUpdate = data.force_update === true || String(data.force_update).toLowerCase() === "true";
-    const newVersion = normalizeVersion(data.version);
-    const currentVersion = normalizeVersion(CURRENT_MENU_VERSION);
+    const updateOn =
+  data.update_on === true ||
+  String(data.update_on).toLowerCase() === "true";
 
-    if(!updateOn) return;
-    if(newVersion && newVersion === currentVersion) return;
+const forceUpdate =
+  data.force_update === true ||
+  String(data.force_update).toLowerCase() === "true";
+
+const newVersion =
+  normalizeVersion(data.version);
+
+const appliedVersion =
+  getAppliedUpdateVersion();
+
+if(!updateOn) return;
+
+// この端末ですでに同じバージョンを更新済みなら表示しない
+if(
+  newVersion &&
+  appliedVersion === newVersion
+){
+  return;
+}
 
     document.getElementById("updateTitle").textContent = data.title || "更新があります";
     document.getElementById("updateVersion").textContent = data.version ? "バージョン: " + data.version : "";
