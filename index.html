@@ -605,13 +605,9 @@ function goPropertyViewer(){ move(VIEWER_URL); }
 function goAdvance(){ move(ADVANCE_URL); }
   
 function goHome(){
-  let url =
-    "https://linkage9696.github.io/linkage/" +
-    "?name=" + encodeURIComponent(empName) +
-    "&token=" + encodeURIComponent(loginToken) +
-    "&t=" + Date.now();
-
-  window.location.replace(url);
+  window.location.replace(
+    "https://linkage9696.github.io/linkage/?setup=1&t=" + Date.now()
+  );
 }
   
 function goAdmin(){
