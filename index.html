@@ -776,6 +776,10 @@ async function checkUpdateInfo(){
     document.getElementById("updateMessage").textContent = data.message || "最新版へ更新してください。";
 
     document.getElementById("updateGoBtn").onclick = function(){
+
+  // この端末では、このバージョンを更新済みとして記録
+  saveAppliedUpdateVersion(data.version);
+
   let newUrl = data.new_url || location.href;
 
   if(empName){
