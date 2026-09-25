@@ -846,6 +846,111 @@ if(
 const LOGIN_URL =
   "https://script.google.com/macros/s/AKfycbzEt-U0hd9QuoPOdDmWxJWrYejnQdrBPkwpXfdaHIchde5uPS8RJ5c8f2mPpifZ_MxA/exec";
 
+// setup=1 のログイン画面からログイン開始
+function startLoginCheck(){
+
+  const requestId =
+    "login_" +
+    Date.now() +
+    "_" +
+    Math.random().toString(36).slice(2);
+
+  const requestInput =
+    document.getElementById("loginRequestId");
+
+  if(!requestInput){
+    return;
+  }
+
+  requestInput.value = requestId;
+
+  setTimeout(function(){
+    checkLoginResult(requestId, 0);
+  }, 1000);
+}
+
+
+// GAS側のログイン結果を確認
+async function checkLoginResult(requestId, count){
+
+  // 最大15回（約15秒）
+  if(count >= 15){
+    alert(
+      "ログイン確認に時間がかかっています。\n" +
+      "もう一度ログインしてください。"
+    );
+    return;
+  }
+
+  try{
+
+    const url =
+      LOGIN_URL +
+      "?action=loginResult" +
+      "&requestId=" +
+      encodeURIComponent(requestId) +
+      "&t=" +
+      Date.now();
+
+    const response = await fetch(url);
+    const result = await response.json();
+
+    // ログイン成功
+    if(
+      result &&
+      result.success === true &&
+      result.name &&
+      result.token
+    ){
+
+      const menuUrl =
+        "https://linkage9696.github.io/linkage/" +
+        "?name=" +
+        encodeURIComponent(result.name) +
+        "&token=" +
+        encodeURIComponent(result.token);
+
+      window.location.replace(menuUrl);
+      return;
+    }
+
+    // PIN間違いなど
+    if(
+      result &&
+      result.success === false &&
+      result.waiting !== true
+    ){
+
+      const message =
+        document.getElementById("setupLoginMessage");
+
+      if(message){
+        message.style.color = "#dc2626";
+        message.textContent =
+          result.message || "暗証番号が違います。";
+      }
+
+      return;
+    }
+
+  }catch(error){
+
+    console.log(
+      "ログイン結果確認エラー:",
+      error
+    );
+  }
+
+  // GAS側がまだ処理中なら1秒後に再確認
+  setTimeout(function(){
+    checkLoginResult(
+      requestId,
+      count + 1
+    );
+  }, 1000);
+}
+
+
 async function verifyMenuLogin(){
   
   // 名前またはトークンが無い場合
