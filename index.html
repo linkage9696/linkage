@@ -738,6 +738,26 @@ function normalizeVersion(v){
   return String(v || "").trim().toLowerCase();
 }
 
+/* この端末で最後に更新したバージョンを保存・取得 */
+const APPLIED_UPDATE_VERSION_KEY = "linkage_applied_update_version";
+
+function getAppliedUpdateVersion(){
+  return normalizeVersion(
+    localStorage.getItem(APPLIED_UPDATE_VERSION_KEY) || ""
+  );
+}
+
+function saveAppliedUpdateVersion(version){
+  const normalized = normalizeVersion(version);
+
+  if(normalized){
+    localStorage.setItem(
+      APPLIED_UPDATE_VERSION_KEY,
+      normalized
+    );
+  }
+}
+
 async function checkUpdateInfo(){
   try{
     const res = await fetch(UPDATE_API_URL + "?t=" + Date.now(), { cache:"no-store" });
