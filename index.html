@@ -586,7 +586,71 @@ function move(url){
 }
 
 /* ===== 各メニュー ===== */
-function goAlcohol(){ move(ALCOHOL_URL); }
+function goAlcohol() {
+
+  // アルコールチェック画面へ移動するまで即時表示
+  let loading = document.getElementById('alcoholGpsLoading');
+
+  if (!loading) {
+    loading = document.createElement('div');
+    loading.id = 'alcoholGpsLoading';
+
+    loading.innerHTML = `
+      <div style="
+        background:#fff;
+        padding:28px 24px;
+        border-radius:16px;
+        box-shadow:0 4px 20px rgba(0,0,0,.18);
+        text-align:center;
+        width:80%;
+        max-width:320px;
+      ">
+        <div style="
+          font-size:21px;
+          font-weight:bold;
+          margin-bottom:12px;
+        ">
+          📍 GPS確認を開始します...
+        </div>
+
+        <div style="
+          font-size:15px;
+          line-height:1.7;
+          color:#666;
+        ">
+          アルコールチェックを開いています。<br>
+          そのままお待ちください。
+        </div>
+      </div>
+    `;
+
+    Object.assign(loading.style, {
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '100%',
+      background: 'rgba(255,255,255,0.92)',
+      zIndex: '999999',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    });
+
+    document.body.appendChild(loading);
+  }
+
+  loading.style.display = 'flex';
+
+  // 先に表示を描画させてからアルコールチェックへ移動
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      setTimeout(function() {
+        move(ALCOHOL_URL);
+      }, 150);
+    });
+  });
+}
 function goForm(){ move(FORM_URL); }
 function goProperty(){
   location.href = appendName(SHATAKU_URL);
