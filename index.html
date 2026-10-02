@@ -845,6 +845,25 @@ const LOGIN_URL =
 // ログイン開始
 function startLoginCheck() {
 
+  // ログインボタンを押したらすぐ表示を変更
+  const loginBtn =
+    document.getElementById("setupLoginBtn");
+
+  if (loginBtn) {
+    loginBtn.disabled = true;
+    loginBtn.textContent = "ログイン中…";
+    loginBtn.style.opacity = "0.7";
+    loginBtn.style.cursor = "wait";
+  }
+
+  const message =
+    document.getElementById("setupLoginMessage");
+
+  if (message) {
+    message.style.color = "#71809a";
+    message.textContent = "ログインを確認しています…";
+  }
+
   const requestId =
     "login_" +
     Date.now() +
