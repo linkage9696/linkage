@@ -2,8 +2,15 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<!-- r29k：ほかのサイトへ移るときに、このページのURL（社員名・トークン）を送らない -->
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Linkage</title>
+
+<!-- r29i：ログイン用のApps Scriptへの接続を先に準備して、最初の通信を速くする -->
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="dns-prefetch" href="https://script.googleusercontent.com">
 
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" href="icon.png">
@@ -522,11 +529,36 @@ const CURRENT_MENU_VERSION = "v2.0.6";
 /* ===== ログイン情報取得 ===== */
 const params = new URLSearchParams(window.location.search);
 
+// r29k：URLの社員名・トークンは、読み取った後にアドレス欄と履歴から消し、このタブの中だけに保存する
+//  （画面の共有・ブックマーク・履歴からトークンが漏れないようにする。別のタブ・ブラウザを閉じた後はログインし直し）
+const LINKAGE_LOGIN_STORE = "linkageLoginV1";
+function linkageReadStoredLogin() {
+  try { return JSON.parse(sessionStorage.getItem(LINKAGE_LOGIN_STORE) || "null") || {}; } catch (e) { return {}; }
+}
+function linkageClearStoredLogin() {
+  try { sessionStorage.removeItem(LINKAGE_LOGIN_STORE); } catch (e) {}
+}
+const linkageStored = linkageReadStoredLogin();
+const linkageUrlToken = (params.get("token") || "").trim();
+
 const empName =
-  (params.get("name") || "").trim();
+  linkageUrlToken
+    ? (params.get("name") || "").trim()
+    : ((params.get("name") || "").trim() || String(linkageStored.name || ""));
 
 const loginToken =
-  (params.get("token") || "").trim();
+  linkageUrlToken || String(linkageStored.token || "");
+
+if (linkageUrlToken) {
+  try { sessionStorage.setItem(LINKAGE_LOGIN_STORE, JSON.stringify({ name: empName, token: linkageUrlToken })); } catch (e) {}
+  try {
+    const cleanParams = new URLSearchParams(window.location.search);
+    cleanParams.delete("token");
+    cleanParams.delete("name");
+    const rest = cleanParams.toString();
+    history.replaceState(null, "", window.location.pathname + (rest ? "?" + rest : "") + window.location.hash);
+  } catch (e) {}
+}
 
 function escapeHtml(text){
   return String(text || "")
@@ -586,7 +618,32 @@ function move(url){
 }
 
 /* ===== 各メニュー ===== */
-function goAlcohol(){ move(ALCOHOL_URL); }
+// r29l：前借管理・アルコールチェック・車両管理は、トークンの代わりに「1回だけ使える引換番号」で開く（URLにトークンを残さない）
+let linkageOpening = false;
+async function moveWithTicket(url){
+  if (linkageOpening) return;
+  linkageOpening = true;
+  try {
+    const result = await linkageFetchJsonRetry(function(){
+      return LOGIN_URL + "?action=ticket&token=" + encodeURIComponent(loginToken) + "&t=" + Date.now();
+    }, 15000, [1000]);
+    if (result && result.success && result.ticket) {
+      location.href = url + (url.indexOf("?") >= 0 ? "&" : "?") +
+        "name=" + encodeURIComponent(empName) + "&ticket=" + encodeURIComponent(result.ticket);
+      return;
+    }
+    // ログインの有効時間切れ・利用停止など：ログインし直す
+    linkageClearStoredLogin();
+    window.location.replace(LOGIN_URL);
+  } catch (e) {
+    console.log("引換番号の取得エラー:", e);
+    alert("通信エラーのため開けませんでした。通信状態を確認して、もう一度押してください。");
+  } finally {
+    linkageOpening = false;
+  }
+}
+
+function goAlcohol(){ move(ALCOHOL_URL); } // r29l：3つのアプリを更新するまでは今までどおり（更新後に moveWithTicket へ切替）
 function goForm(){ move(FORM_URL); }
 function goProperty(){
   location.href = appendName(SHATAKU_URL);
@@ -596,13 +653,13 @@ function goPropertyPhoto(){
   location.href = appendName(url);
 }
 function goChat(){ move(CHAT_URL); }
-function goCar(){ move(CAR_URL); }
+function goCar(){ move(CAR_URL); } // r29l：3つのアプリを更新するまでは今までどおり
 function goUse(){ move(USE_URL); }
 function goSchedule(){ move(SCHEDULE_URL); }
 function goJob(){ move(JOB_URL); }
 function goResume(){ move(RESUME_URL); }
 function goPropertyViewer(){ move(VIEWER_URL); }
-function goAdvance(){ move(ADVANCE_URL); }
+function goAdvance(){ move(ADVANCE_URL); } // r29l：3つのアプリを更新するまでは今までどおり
   
 function goHome(){
   window.location.replace(
@@ -842,6 +899,136 @@ if(
 const LOGIN_URL =
   "https://script.google.com/macros/s/AKfycbzEt-U0hd9QuoPOdDmWxJWrYejnQdrBPkwpXfdaHIchde5uPS8RJ5c8f2mPpifZ_MxA/exec";
 
+// ==============================
+// r29i：通信の時間切れと再試行（ログインの判定・暗証番号の確認はGAS側のまま変えない）
+// ==============================
+// 指定の時間で打ち切る fetch（応答が返らないまま「読み込み中」で止まらないようにする）
+async function linkageFetchJson(url, timeoutMs) {
+  const ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+  const timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, timeoutMs) : null;
+  try {
+    const response = await fetch(url, ctrl ? { signal: ctrl.signal, cache: "no-store" } : { cache: "no-store" });
+    if (!response.ok) { throw new Error("HTTP " + response.status); }
+    return await response.json();
+  } finally {
+    if (timer) { clearTimeout(timer); }
+  }
+}
+// 通信の失敗（時間切れ・接続エラー・応答の形の不正）だけを、間を空けて再試行する
+async function linkageFetchJsonRetry(makeUrl, timeoutMs, waits) {
+  let lastError = null;
+  for (let i = 0; i <= waits.length; i++) {
+    try {
+      return await linkageFetchJson(makeUrl(), timeoutMs);
+    } catch (e) {
+      lastError = e;
+      console.log("通信の再試行 " + (i + 1) + "回目:", e);
+      if (i < waits.length) {
+        await new Promise(function(r){ setTimeout(r, waits[i]); });
+      }
+    }
+  }
+  throw lastError;
+}
+
+// ==============================
+// r29i：社員名の一覧
+//  ・この端末で前回取得した一覧（7日以内）があれば、すぐに表示する（最新の一覧は裏で取得して置き換える。退職・利用停止の人は最新の一覧で消える）
+//  ・保存するのは社員名だけ（暗証番号・トークンは保存しない）
+//  ・1回の取得は12秒で打ち切り、通信の失敗は2回まで再試行する
+//  ・取得できなかったときは「再読み込み」で取り直せる
+//  ・ログインできるかどうかの判定はGAS側のまま（一覧は選択肢を出すだけ）
+// ==============================
+const LINKAGE_EMPLOYEE_CACHE_KEY = "linkageEmployeeNamesV1";
+
+function linkageFillEmployees(names, keepValue) {
+  const select = document.getElementById("setupEmployeeName");
+  if (!select) { return; }
+  const current = keepValue ? select.value : "";
+  select.innerHTML = '<option value="">社員名を選択してください</option>';
+  names.forEach(function(name){
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    select.appendChild(option);
+  });
+  if (current && names.indexOf(current) >= 0) { select.value = current; }
+}
+
+// 前回の一覧を使うのは保存から7日以内だけ（古い一覧は捨てて、GASの応答を待つ）
+const LINKAGE_EMPLOYEE_CACHE_DAYS = 7;
+
+function linkageReadEmployeeCache() {
+  try {
+    const raw = localStorage.getItem(LINKAGE_EMPLOYEE_CACHE_KEY);
+    const data = raw ? JSON.parse(raw) : null;
+    const fresh = data && Number(data.savedAt) > 0 &&
+      Date.now() - Number(data.savedAt) < LINKAGE_EMPLOYEE_CACHE_DAYS * 24 * 60 * 60 * 1000;
+    if (fresh && Array.isArray(data.names) && data.names.length) { return data.names.map(String); }
+    if (raw && !fresh) { localStorage.removeItem(LINKAGE_EMPLOYEE_CACHE_KEY); }
+  } catch (e) {}
+  return null;
+}
+
+function linkageSaveEmployeeCache(names) {
+  try { localStorage.setItem(LINKAGE_EMPLOYEE_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), names: names })); } catch (e) {}
+}
+
+async function linkageLoadEmployees() {
+  const message = document.getElementById("setupLoginMessage");
+  const cached = linkageReadEmployeeCache();
+  if (cached) {
+    linkageFillEmployees(cached, true);
+  }
+
+  try {
+    const result = await linkageFetchJsonRetry(function(){
+      return LOGIN_URL + "?action=employees&t=" + Date.now();
+    }, 12000, [1000, 3000]);
+
+    if (result && result.success && Array.isArray(result.employees)) {
+      const names = result.employees.map(String);
+      linkageFillEmployees(names, true);
+      linkageSaveEmployeeCache(names);
+      if (message && message.dataset.employeeError === "1") {
+        message.textContent = "";
+        message.dataset.employeeError = "";
+      }
+    } else if (!cached) {
+      linkageFillEmployees([], false);
+    }
+
+  } catch (e) {
+
+    console.log("社員名取得エラー:", e);
+
+    if (message) {
+      message.style.color = "#dc2626";
+      message.dataset.employeeError = "1";
+      message.innerHTML = "";
+      message.appendChild(document.createTextNode(
+        cached
+          ? "最新の社員名を取得できませんでした（前回の一覧を表示しています）。"
+          : "社員名を読み込めませんでした。通信状態を確認してください。"
+      ));
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.textContent = "再読み込み";
+      retry.style.cssText = "display:block;margin:10px auto 0;padding:10px 22px;border:1px solid #cbd5e1;border-radius:10px;background:#ffffff;color:#2563eb;font-size:15px;font-weight:bold;";
+      retry.onclick = function() {
+        message.style.color = "#71809a";
+        message.textContent = "社員名を読み込み中…";
+        linkageLoadEmployees();
+      };
+      message.appendChild(retry);
+    }
+    if (!cached) {
+      const select = document.getElementById("setupEmployeeName");
+      if (select) { select.innerHTML = '<option value="">社員名を読み込めませんでした</option>'; }
+    }
+  }
+}
+
 // ログイン開始
 function startLoginCheck() {
 
@@ -864,11 +1051,20 @@ function startLoginCheck() {
     message.textContent = "ログインを確認しています…";
   }
 
+  // r29j：ログイン結果を受け取るための識別番号は、推測できない乱数（crypto）で作る
+  let randomPart = "";
+  try {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    randomPart = Array.from(bytes).map(function(b){ return b.toString(16).padStart(2, "0"); }).join("");
+  } catch (e) {
+    randomPart = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+  }
   const requestId =
     "login_" +
     Date.now() +
     "_" +
-    Math.random().toString(36).slice(2);
+    randomPart;
 
   const requestInput =
     document.getElementById("loginRequestId");
@@ -881,17 +1077,42 @@ function startLoginCheck() {
   requestInput.value = requestId;
 
   // ログイン結果の確認を開始
+  // r29i：GASがログインの送信を受け付けた時点（見えない枠の読込完了）で、待たずにすぐ確認する
+  linkageLoginPolling = requestId;
+  const frame = document.getElementById("loginFrame");
+  if (frame) {
+    frame.onload = function() {
+      if (linkageLoginPolling === requestId && !linkageLoginChecking) {
+        checkLoginResult(requestId, linkageLoginCount);
+      }
+    };
+  }
   setTimeout(function() {
-    checkLoginResult(requestId, 0);
+    if (linkageLoginPolling === requestId && !linkageLoginChecking) {
+      checkLoginResult(requestId, linkageLoginCount);
+    }
   }, 1000);
 }
+
+// r29i：ログイン結果の確認の状態（同じ確認を重ねて走らせない）
+let linkageLoginPolling = "";
+let linkageLoginChecking = false;
+let linkageLoginCount = 0;
+let linkageLoginTimer = null;
 
 
 // GASにログイン結果を確認する
 async function checkLoginResult(requestId, count) {
 
-  // 最大15回（約15秒）
-  if (count >= 15) {
+  if (linkageLoginPolling !== requestId || linkageLoginChecking) {
+    return;
+  }
+  linkageLoginCount = count;
+  if (linkageLoginTimer) { clearTimeout(linkageLoginTimer); linkageLoginTimer = null; }
+
+  // r29i：最大30回（約30秒。GASの起動に時間がかかる場合も待つ）
+  if (count >= 30) {
+    linkageLoginPolling = "";
 
     const loginBtn =
       document.getElementById("setupLoginBtn");
@@ -910,12 +1131,23 @@ async function checkLoginResult(requestId, count) {
     if (message) {
       message.style.color = "#dc2626";
       message.textContent =
-        "ログイン確認に時間がかかっています。もう一度ログインしてください。";
+        "ログイン確認に時間がかかっています。通信状態を確認して、もう一度ログインしてください。";
     }
 
     return;
   }
 
+  // r29i：待ち時間が長いときは、止まっていないことを表示する
+  if (count === 10) {
+    const waitMessage =
+      document.getElementById("setupLoginMessage");
+    if (waitMessage) {
+      waitMessage.style.color = "#71809a";
+      waitMessage.textContent = "サーバーの応答を待っています…（そのままお待ちください）";
+    }
+  }
+
+  linkageLoginChecking = true;
   try {
 
     const url =
@@ -926,11 +1158,9 @@ async function checkLoginResult(requestId, count) {
       "&t=" +
       Date.now();
 
-    const response =
-      await fetch(url);
-
+    // r29i：1回の確認は15秒で打ち切り、次の確認へ進む（応答が返らないまま止まらない）
     const result =
-      await response.json();
+      await linkageFetchJson(url, 15000);
 
     // ==============================
     // ログイン成功
@@ -949,6 +1179,7 @@ async function checkLoginResult(requestId, count) {
         "&token=" +
         encodeURIComponent(result.token);
 
+      linkageLoginPolling = "";
       window.location.replace(menuUrl);
       return;
     }
@@ -985,6 +1216,8 @@ async function checkLoginResult(requestId, count) {
           result.message || "暗証番号が違います。";
       }
 
+      linkageLoginPolling = "";
+
       // ログインボタンを元に戻す
       if (loginBtn) {
         loginBtn.disabled = false;
@@ -1002,12 +1235,19 @@ async function checkLoginResult(requestId, count) {
       "ログイン結果確認エラー:",
       error
     );
+  } finally {
+    linkageLoginChecking = false;
   }
+
+  if (linkageLoginPolling !== requestId) {
+    return;
+  }
+  linkageLoginCount = count + 1;
 
   // ==============================
   // まだ認証処理中なら1秒後に再確認
   // ==============================
-  setTimeout(function() {
+  linkageLoginTimer = setTimeout(function() {
 
     checkLoginResult(
       requestId,
@@ -1164,59 +1404,14 @@ if(setupMode){
   `;
 
   // 利用中の社員名をGASから取得
-  try {
-
-    const employeeUrl =
-      LOGIN_URL +
-      "?action=employees&t=" +
-      Date.now();
-
-    const response =
-      await fetch(employeeUrl);
-
-    const result =
-      await response.json();
-
-    const select =
-      document.getElementById("setupEmployeeName");
-
-    select.innerHTML =
-      '<option value="">社員名を選択してください</option>';
-
-    if(
-      result &&
-      result.success &&
-      Array.isArray(result.employees)
-    ){
-      result.employees.forEach(function(name){
-
-        const option =
-          document.createElement("option");
-
-        option.value = name;
-        option.textContent = name;
-
-        select.appendChild(option);
-      });
-    }
-
-  }catch(e){
-
-    console.log("社員名取得エラー:", e);
-
-    const message =
-      document.getElementById("setupLoginMessage");
-
-    message.style.color = "#dc2626";
-    message.textContent =
-      "社員名を読み込めませんでした。";
-  }
+  await linkageLoadEmployees();
 
   return false;
 }
+
   // 名前またはトークンが無い場合
   if(!empName || !loginToken){
-    window.location.replace(LOGIN_URL);
+    linkageClearStoredLogin(); window.location.replace(LOGIN_URL);
     return false;
   }
 
@@ -1227,8 +1422,11 @@ if(setupMode){
       "?action=verify&token=" +
       encodeURIComponent(loginToken);
 
-    const response = await fetch(url);
-    const result = await response.json();
+    // r29i：通信の失敗（時間切れ・接続エラー）だけ2回まで再試行する。
+    // 認証の結果（成功・失敗）の扱いは変えない。成功するまでメニューは表示しない。
+    const result = await linkageFetchJsonRetry(function(){
+      return url;
+    }, 15000, [1000, 2500]);
 
     // 認証失敗
     if(
@@ -1236,7 +1434,7 @@ if(setupMode){
       result.success !== true ||
       result.name !== empName
     ){
-      window.location.replace(LOGIN_URL);
+      linkageClearStoredLogin(); window.location.replace(LOGIN_URL);
       return false;
     }
 
@@ -1248,7 +1446,7 @@ if(setupMode){
     console.log("ログイン認証通信エラー:", e);
 
     // 通信できない場合もメニューを使用させない
-    window.location.replace(LOGIN_URL);
+    linkageClearStoredLogin(); window.location.replace(LOGIN_URL);
     return false;
   }
 }
@@ -1269,6 +1467,7 @@ function resetIdleTimer(){
     const LOGIN_URL =
       "https://script.google.com/macros/s/AKfycbzEt-U0hd9QuoPOdDmWxJWrYejnQdrBPkwpXfdaHIchde5uPS8RJ5c8f2mPpifZ_MxA/exec";
 
+    linkageClearStoredLogin();
     window.location.replace(LOGIN_URL);
 
   }, IDLE_TIMEOUT);
